@@ -4,16 +4,30 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="/">QuizApp</a>
-        <a href="/newquiz">New Quiz</a>
-        <a href="/profile">Profile</a>
-        <a href="authentication/profile">Account settings</a>
-        <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
+        <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+                <a href="/newquiz" class="nav-link text-dark">New Quiz</a>
+            </li>
+            <li class="nav-item">
+                <a href="/profile" class="nav-link text-dark">Profile</a>
+            </li>
+            <li>
+                <a href="authentication/profile" class="nav-link text-dark">Account settings</a>
+            </li>
+            <li>
+                <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
+            </li>
+        </ul>
     </Authorized>
     <NotAuthorized>
-        <a href="/">QuizApp</a>
-        <a href="authentication/register">Register</a>
-        <a href="authentication/login">Log in</a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a href="authentication/register" class="nav-link text-dark">Register</a>
+            </li>
+            <li class="nav-item">
+                <a href="authentication/login" class="nav-link text-dark">Log in</a>
+            </li>
+        </ul>
     </NotAuthorized>
 </AuthorizeView>
 
