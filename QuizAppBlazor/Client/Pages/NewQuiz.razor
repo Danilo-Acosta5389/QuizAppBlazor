@@ -1,6 +1,27 @@
 ﻿@page "/newquiz"
-<h3>New Quiz</h3>
+@using QuizAppBlazor.Shared.DTOs
+
+<h3>Create New Quiz</h3>
+
+
+<EditForm Model="@quizModel">
+    <p>
+        <label for="title">Quiz Title: </label>
+        <InputText id="title" @bind-Value="quizModel.Title" />
+    </p>
+    <p>
+        <label for="description">Description: </label>
+        <InputTextArea id="description" @bind-Value="quizModel.Description"/>
+    </p>
+    <button type="submit">Create</button>
+</EditForm>
+
+@* <div>
+    <span>@quizModel.Title</span>
+    <span>@quizModel.Description</span>
+</div> *@
 
 @code {
+    public CreateQuizDTO quizModel = new CreateQuizDTO();
 
 }

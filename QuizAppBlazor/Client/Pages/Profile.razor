@@ -1,7 +1,14 @@
 ﻿@page "/profile"
+@inject AuthenticationStateProvider AuthStateProv
 
 <h3>Profile</h3>
 
-@code {
+@{
+    var authStateTask = AuthStateProv.GetAuthenticationStateAsync();
+    var user = authStateTask.Result.User;
+}
 
+@if (user.Identity?.IsAuthenticated ?? false)
+{
+    <p>Welcome, @user.ToString()</p>
 }
