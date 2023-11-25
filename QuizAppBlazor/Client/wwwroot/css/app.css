@@ -104,3 +104,10 @@ a, .btn-link {
 .no-underline {
     text-decoration: none;
 }
+
+
+.card {
+    border: 3px solid black;
+    width: 300px;
+    height: 400px;
+}

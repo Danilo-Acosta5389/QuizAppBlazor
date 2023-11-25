@@ -3,12 +3,12 @@
 
 <h3>Profile</h3>
 
-@{
+@* @{
     var authStateTask = AuthStateProv.GetAuthenticationStateAsync();
     var user = authStateTask.Result.User;
-}
+} *@
 
-@if (user.Identity?.IsAuthenticated ?? false)
+@* @if (user.Identity?.IsAuthenticated ?? false)
 {
     <p>Welcome, @user.ToString()</p>
-}
+} *@

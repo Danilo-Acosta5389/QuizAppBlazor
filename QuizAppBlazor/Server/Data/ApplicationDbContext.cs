@@ -24,6 +24,15 @@ namespace QuizAppBlazor.Server.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<UserQuizModel>()
                 .HasKey(k => new { k.UserId, k.QuizId });
+
+            //Database seeding
+            modelBuilder.Entity<QuizModel>().HasData(
+                new QuizModel { 
+                    Id = Guid.NewGuid(), 
+                    Title = "Politics Quiz", 
+                    Description = "Test your knowledge about world politics.", 
+                    UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
+                });
         }
     }
 }
