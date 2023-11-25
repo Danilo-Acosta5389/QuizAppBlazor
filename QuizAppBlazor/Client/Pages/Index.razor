@@ -3,6 +3,7 @@
 @inject HttpClient Http
 
 <h1>QuizApp</h1>
+<div class="d-flex flex-wrap">
 @if(quizzes == null)
 {
     <p><em>Loading...</em></p>
@@ -11,15 +12,16 @@ else
 {
         @foreach(var quiz in quizzes)
         {
-        <div class="card" style="width: 18rem;">
+            <div class="card btn btn-primary" style="width: 18rem; margin: 15px;">
             <div class="card-body">
                 <h5 class="card-title">@quiz.Title</h5>
                 <p class="card-text">@quiz.Description</p>
-                <a href="#" class="btn btn-primary">Take quiz</a>
+                @* <a href="#" class="btn btn-primary">Take quiz</a> *@
             </div>
         </div>
         }
 }
+</div>
 
 
 
