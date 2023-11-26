@@ -2,40 +2,42 @@
 @using QuizAppBlazor.Shared.DTOs
 @using System.Text.Json;
 @using System.Text;
+@using System.Net;
 @inject HttpClient _http
 
-<h3 class="title">Create New Quiz</h3>
 
-<div class="mb-3" style="max-width: 500px">
-    <EditForm Model="@quizModel" OnSubmit="PostQuiz">
-        <p>
-            <label for="title" class="form-label">Quiz Title: </label>
-            <InputText id="title" class="form-control" @bind-Value="quizModel.Title" />
-        </p>
-        <p>
-            <label for="description" class="form-label">Description: </label>
-            <InputTextArea id="description" class="form-control" @bind-Value="quizModel.Description" rows="3" />
-        </p>
-        <button type="submit" class="btn btn-primary">Create</button>
-    </EditForm>
-</div>
-<div>
-    <br />
-    <span><b>Server response: </b>@requestStatus</span>
-    <br /><br />
-    <span><b>Json sent: </b>@jsonPayLoad</span>
+
+<div class="d-flex flex-column">
+    <h3 class="title align-self-center flex-wrap">Create New Quiz</h3>
+    <div class="d-flex flex-wrap align-self-center justify-content-center flex-column" style="max-width: 500px">
+        <EditForm Model="@quizModel" OnSubmit="PostQuiz">
+            <p>
+                <label for="title" class="form-label">Quiz Title: </label>
+                <InputText id="title" class="form-control" @bind-Value="quizModel.Title" />
+            </p>
+            <p>
+                <label for="description" class="form-label">Description: </label>
+                <InputTextArea id="description" class="form-control" @bind-Value="quizModel.Description" rows="3" />
+            </p>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+        <br />
+        <span><b>Server response: </b>@requestStatus</span>
+        <br /><br />
+        <span><b>Json sent: </b>@json</span>
+    </div>
 </div>
 
 @code {
-    private static CreateQuizDTO quizModel = new CreateQuizDTO();
-    private static string? jsonPayLoad;
-    private static string? requestStatus;
+    private CreateQuizDTO quizModel = new CreateQuizDTO();
+    private static string? json;
+    private static HttpResponseMessage? requestStatus;
     private async Task PostQuiz()
     {
-        jsonPayLoad = JsonSerializer.Serialize(quizModel);
-        var requestContent = new StringContent(jsonPayLoad, Encoding.UTF8);
-        Console.WriteLine(requestContent);
-        var response = await _http.PostAsync("api/quiz", requestContent);
-        requestStatus = response.ToString();
+        var jsonPayLoad = JsonSerializer.Serialize(quizModel);
+        json = jsonPayLoad;
+        var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
+        var response = await _http.PostAsync("api/quiz/create", content);
+        requestStatus = response;
     }
 }
