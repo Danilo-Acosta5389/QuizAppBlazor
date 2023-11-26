@@ -12,8 +12,8 @@ using QuizAppBlazor.Server.Data;
 namespace QuizAppBlazor.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231125132515_DB-Seed")]
-    partial class DBSeed
+    [Migration("20231126223217_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -374,16 +374,24 @@ namespace QuizAppBlazor.Server.Migrations
 
             modelBuilder.Entity("QuizAppBlazor.Server.Models.QuestionModel", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Alternativ2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Alternativ3")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Alternativ4")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CorrectAnswer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
+                    b.Property<bool>("HasTimeLimit")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ImageVideo")
                         .IsRequired()
@@ -399,11 +407,12 @@ namespace QuizAppBlazor.Server.Migrations
                     b.Property<Guid>("QuizId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserAnswer")
+                    b.Property<int>("TimeLimit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserTextInput")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
 
                     b.HasIndex("QuizId");
 
@@ -432,15 +441,6 @@ namespace QuizAppBlazor.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Quizzes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("9cac93b0-73b4-4a5b-a4dd-41fbd4e7796c"),
-                            Description = "Test your knowledge about world politics.",
-                            Title = "Politics Quiz",
-                            UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
-                        });
                 });
 
             modelBuilder.Entity("QuizAppBlazor.Server.Models.UserQuizModel", b =>

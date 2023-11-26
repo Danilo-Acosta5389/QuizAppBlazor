@@ -12,8 +12,8 @@ using QuizAppBlazor.Server.Data;
 namespace QuizAppBlazor.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231125153210_DB-seed-x3")]
-    partial class DBseedx3
+    [Migration("20231126231905_QuestionKeyAndNullables")]
+    partial class QuestionKeyAndNullables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -374,22 +374,35 @@ namespace QuizAppBlazor.Server.Migrations
 
             modelBuilder.Entity("QuizAppBlazor.Server.Models.QuestionModel", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Alternativ2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Alternativ3")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Alternativ4")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CorrectAnswer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
+                    b.Property<bool?>("HasTimeLimit")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ImageVideo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsCorrect")
+                    b.Property<bool?>("IsCorrect")
                         .HasColumnType("bit");
 
                     b.Property<string>("Question")
@@ -399,8 +412,10 @@ namespace QuizAppBlazor.Server.Migrations
                     b.Property<Guid>("QuizId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserAnswer")
-                        .IsRequired()
+                    b.Property<int?>("TimeLimit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserTextInput")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -432,29 +447,6 @@ namespace QuizAppBlazor.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Quizzes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e192cb77-44ff-4910-b820-f65e1059424d"),
-                            Description = "Test your knowledge about world politics.",
-                            Title = "Politics Quiz",
-                            UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
-                        },
-                        new
-                        {
-                            Id = new Guid("9ce51e9d-cdba-4b3b-afcd-7f6fe5863e2e"),
-                            Description = "Test your knowledge about countrys and citys.",
-                            Title = "Geography Quiz",
-                            UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
-                        },
-                        new
-                        {
-                            Id = new Guid("b78f6877-6f78-449a-9393-fb7cdead3a20"),
-                            Description = "Test your knowledge about world history.",
-                            Title = "History Quiz",
-                            UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
-                        });
                 });
 
             modelBuilder.Entity("QuizAppBlazor.Server.Models.UserQuizModel", b =>

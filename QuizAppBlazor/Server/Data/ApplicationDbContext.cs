@@ -25,28 +25,35 @@ namespace QuizAppBlazor.Server.Data
             modelBuilder.Entity<UserQuizModel>()
                 .HasKey(k => new { k.UserId, k.QuizId });
 
+            modelBuilder.Entity<QuestionModel>()
+                .HasKey(k => new { k.Id });
+
+            //modelBuilder.Entity<QuizModel>()
+            //    .HasKey(k => new { k.Id });
+
             //Database seeding
-            modelBuilder.Entity<QuizModel>().HasData(
-                new QuizModel { 
-                    Id = Guid.NewGuid(), 
-                    Title = "Politics", 
-                    Description = "Test your knowledge about world politics.", 
-                    UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
-                },
-                new QuizModel
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "Geography",
-                    Description = "Test your knowledge about countrys and citys.",
-                    UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
-                },
-                new QuizModel
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "History",
-                    Description = "Test your knowledge about world history.",
-                    UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
-                });
+            //modelBuilder.Entity<QuizModel>().HasData(
+            //    new QuizModel
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        Title = "Politics",
+            //        Description = "Test your knowledge about world politics.",
+            //        UserId = "05307715-cae7-45ca-b5d8-d30ec1705e2a"
+            //    },
+            //    new QuizModel
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        Title = "Geography",
+            //        Description = "Test your knowledge about countrys and citys.",
+            //        UserId = "05307715-cae7-45ca-b5d8-d30ec1705e2a"
+            //    },
+            //    new QuizModel
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        Title = "History",
+            //        Description = "Test your knowledge about world history.",
+            //        UserId = "05307715-cae7-45ca-b5d8-d30ec1705e2a"
+            //    });
         }
     }
 }

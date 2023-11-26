@@ -31,6 +31,18 @@ namespace QuizAppBlazor
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "BlazorCors",
+                    policy =>
+                    {
+                        //policy.WithOrigins("https://localhost:7021")
+                        policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
+
             builder.Services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
@@ -61,7 +73,11 @@ namespace QuizAppBlazor
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseCors(builder => builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+                );
             app.UseIdentityServer();
             app.UseAuthorization();
 

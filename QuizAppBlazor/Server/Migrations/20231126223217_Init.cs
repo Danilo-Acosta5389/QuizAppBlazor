@@ -237,18 +237,20 @@ namespace QuizAppBlazor.Server.Migrations
                 name: "Questions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     QuizId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Alternativ2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Alternativ3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Alternativ4 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserTextInput = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsCorrect = table.Column<bool>(type: "bit", nullable: false),
                     ImageVideo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Duration = table.Column<int>(type: "int", nullable: false)
+                    HasTimeLimit = table.Column<bool>(type: "bit", nullable: false),
+                    TimeLimit = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Questions_Quizzes_QuizId",
                         column: x => x.QuizId,

@@ -31,7 +31,7 @@ namespace QuizAppBlazor.Server.Controllers
         // POST: api/quiz/create
         [HttpPost]
         [Route("create")]
-        public IActionResult CreateQuiz([FromBody]CreateQuizDTO newQuiz)
+        public ActionResult CreateQuiz([FromBody]CreateQuizDTO newQuiz)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
@@ -43,16 +43,15 @@ namespace QuizAppBlazor.Server.Controllers
             {
                 Console.WriteLine("Title or description empty");
                 return BadRequest();
-
             }
             
             var result = new QuizModel() { Id = Guid.NewGuid(), Title = newQuiz.Title, Description = newQuiz.Description, UserId = userId };
             var jsonPayLoad = JsonSerializer.Serialize(result);
             Console.WriteLine(jsonPayLoad);
 
-            //_context.Add(result);
-            //_context.SaveChanges();
-            return Ok();
+            _context.Add(result);
+            _context.SaveChanges();
+            return new OkObjectResult(result.Id);
         }
     }
 }

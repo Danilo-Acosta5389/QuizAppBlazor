@@ -12,14 +12,14 @@
         <h3 class="title align-self-center flex-wrap">Create New Quiz</h3>
         <br />
         <div class="d-flex flex-wrap align-self-center justify-content-center flex-column" style="max-width: 300px">
-            <EditForm Model="@quizModel" OnSubmit="PostQuiz">
+            <EditForm Model="@quiz" OnSubmit="PostQuiz">
                 <p>
                     <label for="title" class="form-label">Quiz Title: </label>
-                    <InputText id="title" class="form-control" @bind-Value="quizModel.Title" />
+                    <InputText id="title" class="form-control" @bind-Value="quiz.Title" />
                 </p>
                 <p>
                     <label for="description" class="form-label">Description: </label>
-                    <InputTextArea id="description" class="form-control" @bind-Value="quizModel.Description" rows="3" />
+                    <InputTextArea id="description" class="form-control" @bind-Value="quiz.Description" rows="3" />
                 </p>
                 <button type="submit" class="btn btn-primary">Create</button>
             </EditForm>
@@ -35,8 +35,8 @@
     <div class="d-flex flex-wrap align-self-center justify-content-center flex-column">
         <h3 class="title align-self-center flex-wrap">Quiz created!</h3>
         <br/>
-        <h2 class="align-self-center flex-wrap">@quizModel.Title</h2>
-        <h3 class="align-self-center flex-wrap">@quizModel.Description</h3>
+        <h2 class="align-self-center flex-wrap">@quiz.Title</h2>
+        <h3 class="align-self-center flex-wrap">@quiz.Description</h3>
     </div>
     
 }
@@ -56,35 +56,39 @@
                             <InputText id="question" class="form-control" @bind-Value="question.Question" />
                         </p>
                         <p>
-                            <label for="answer" class="form-label">Correct answer (1): </label>
+                            <label for="answer" class="form-label">Correct answer: </label>
                             <InputText id="answer" class="form-control" @bind-Value="question.CorrectAnswer" />
                         </p>
                         <p>
-                            <label for="alt2" class="form-label">Alternativ answer (2): </label>
-                            <InputText id="alt2" class="form-control" @bind-Value="question.CorrectAnswer" />
+                            <label for="alt2" class="form-label">Alternativ: </label>
+                            <InputText id="alt2" class="form-control" @bind-Value="question.Alternativ2" />
                         </p>
                         <p>
-                            <label for="alt3" class="form-label">Alternativ answer (3): </label>
-                            <InputText id="alt3" class="form-control" @bind-Value="question.CorrectAnswer" />
+                            <label for="alt3" class="form-label">Alternativ: </label>
+                            <InputText id="alt3" class="form-control" @bind-Value="question.Alternativ3" />
                         </p>
                         <p>
-                            <label for="alt4" class="form-label">Alternativ answer (4): </label>
-                            <InputText id="alt4" class="form-control" @bind-Value="question.CorrectAnswer" />
+                            <label for="alt4" class="form-label">Alternativ: </label>
+                            <InputText id="alt4" class="form-control" @bind-Value="question.Alternativ4" />
                         </p>
                         <p>
                             <label for="imagevid" class="form-label">Link to image or video (URL): </label>
-                            <InputText id="imagevid" class="form-control" @bind-Value="question.CorrectAnswer" />
+                            <InputText id="imagevid" class="form-control" @bind-Value="question.ImageVideo" />
                         </p>
                         <p>
+                            <label for="timelimit" class="form-label">Has time limit: </label>
+                            <InputCheckbox id="has-time-limit" @bind-Value="question.HasTimeLimit" />
+                        </p>
+                        <p >
                             <label for="duration" class="form-label">Duration in seconds: </label>
-                            <InputNumber id="duration" class="form-control" @bind-Value="question.Duration" />
+                            <InputNumber disabled="@{question.HasTimeLimit ? isDisabled : !isDisabled}" id="time-limit" class="form-control" @bind-Value="question.TimeLimit" />
                         </p>
                         <button type="submit" class="btn btn-primary">Create</button>
                     </EditForm>
-                    <br />
-                    <span><b>Server response: </b>@requestStatus</span>
+                    @* <br />
+                    <span><b>Server response: </b>@quizId</span>
                     <br /><br />
-                    @* <span class="flex-wrap"><b>Json sent: </b>@json2</span> *@
+                    <span class="flex-wrap"><b>Json sent: </b>@json2</span> *@
                 </div>
             </div>
         }
@@ -98,24 +102,32 @@
     
 </div>
 
+@{
+    Console.WriteLine("Has time limit: " + question.HasTimeLimit);
+}
 
 @code {
+
+    //Quiz form
     private bool showQuizForm = true;
-    private bool showQuestionForm = true;
 
-
-    private CreateQuizDTO quizModel = new CreateQuizDTO();
+    private CreateQuizDTO quiz = new CreateQuizDTO();
     private static string? json;
     private static string requestStatus;
+    private Guid quizId;
+
     private async Task PostQuiz()
     {
-        var jsonPayLoad = JsonSerializer.Serialize(quizModel);
+        var jsonPayLoad = JsonSerializer.Serialize(quiz);
         json = jsonPayLoad;
         var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
         var response = await _http.PostAsync("api/quiz/create", content);
         if (response.StatusCode == HttpStatusCode.OK)
         {
-            requestStatus = "OK";
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<Guid>(responseContent);
+            quizId = result;
+            Console.WriteLine(result);
             showQuizForm = false;
         }
         else
@@ -125,19 +137,34 @@
 
     }
 
+
+    //Question Form
+    private bool showQuestionForm = true;
+    private bool isDisabled = false;
     private CreateQuestionDTO question = new CreateQuestionDTO();
     private static string? json2;
-    private void PostQuestion()
+
+    private async Task PostQuestion()
     {
+        question.QuizId = quizId;
         var jsonPayLoad = JsonSerializer.Serialize(question);
         json2 = jsonPayLoad;
         var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
-        question = new CreateQuestionDTO();
+        var response = await _http.PostAsync("api/question/create", content);
         showQuestionForm = false;
     }
 
     private void NewQuestion()
     {
+        question = new CreateQuestionDTO();
         showQuestionForm = true;
+    }
+
+    
+    
+    private void HasChanged()
+    {
+        Console.WriteLine("Checked");
+        //isDisabled = !isDisabled;
     }
 }
