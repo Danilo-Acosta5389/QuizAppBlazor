@@ -104,43 +104,8 @@ a, .btn-link {
 
 .title {
     font-family: 'Press start 2P';
-    color: yellowgreen;
-    text-shadow: 2px 2px 5px yellow, -2px -2px 3px black;
+    color: yellow;
+    text-shadow: 2px 2px 5px black;
     text-align: center;
 }
 
-/*.comic-text {
-    $random-text: 'square tube!';
-    $stroke-width: $extra-large * 0.35;
-    font-family: 'Molle', cursive;
-    position: relative;
-    font-size: $extra-large;
-    text-transform: uppercase;
-    word-spacing: -12px;
-    letter-spacing: -5px;
-    -webkit-text-stroke-width: $stroke-width;
-    -webkit-text-stroke-color: white;
-    &:before
-
-{
-    position: absolute;
-    content: $random-text;
-    top: 3px;
-    left: 12px;
-    color: $yellow;
-    $stroke-width: $extra-large * 0.08;
-    -webkit-text-stroke-width: $stroke-width;
-    -webkit-text-stroke-color: lighten(black, 15%);
-}
-
-&:after {
-    position: absolute;
-    content: $random-text;
-    top: 0;
-    left: 0;
-    color: lighten($red, 5%);
-    $stroke-width: $extra-large * 0.06;
-    -webkit-text-stroke-width: $stroke-width;
-    -webkit-text-stroke-color: lighten(black, 15%);
-}
-}*/

@@ -29,21 +29,21 @@ namespace QuizAppBlazor.Server.Data
             modelBuilder.Entity<QuizModel>().HasData(
                 new QuizModel { 
                     Id = Guid.NewGuid(), 
-                    Title = "Politics Quiz", 
+                    Title = "Politics", 
                     Description = "Test your knowledge about world politics.", 
                     UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
                 },
                 new QuizModel
                 {
                     Id = Guid.NewGuid(),
-                    Title = "Geography Quiz",
+                    Title = "Geography",
                     Description = "Test your knowledge about countrys and citys.",
                     UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
                 },
                 new QuizModel
                 {
                     Id = Guid.NewGuid(),
-                    Title = "History Quiz",
+                    Title = "History",
                     Description = "Test your knowledge about world history.",
                     UserId = "e1d6aa61-4d5e-4ebe-b483-1ec222f9adad"
                 });

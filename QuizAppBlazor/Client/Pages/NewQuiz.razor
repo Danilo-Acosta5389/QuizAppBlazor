@@ -5,39 +5,139 @@
 @using System.Net;
 @inject HttpClient _http
 
-
-
 <div class="d-flex flex-column">
-    <h3 class="title align-self-center flex-wrap">Create New Quiz</h3>
-    <div class="d-flex flex-wrap align-self-center justify-content-center flex-column" style="max-width: 500px">
-        <EditForm Model="@quizModel" OnSubmit="PostQuiz">
-            <p>
-                <label for="title" class="form-label">Quiz Title: </label>
-                <InputText id="title" class="form-control" @bind-Value="quizModel.Title" />
-            </p>
-            <p>
-                <label for="description" class="form-label">Description: </label>
-                <InputTextArea id="description" class="form-control" @bind-Value="quizModel.Description" rows="3" />
-            </p>
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+@if(showQuizForm == true)
+{
+    <div class="d-flex flex-column">
+        <h3 class="title align-self-center flex-wrap">Create New Quiz</h3>
         <br />
-        <span><b>Server response: </b>@requestStatus</span>
-        <br /><br />
-        <span><b>Json sent: </b>@json</span>
+        <div class="d-flex flex-wrap align-self-center justify-content-center flex-column" style="max-width: 300px">
+            <EditForm Model="@quizModel" OnSubmit="PostQuiz">
+                <p>
+                    <label for="title" class="form-label">Quiz Title: </label>
+                    <InputText id="title" class="form-control" @bind-Value="quizModel.Title" />
+                </p>
+                <p>
+                    <label for="description" class="form-label">Description: </label>
+                    <InputTextArea id="description" class="form-control" @bind-Value="quizModel.Description" rows="3" />
+                </p>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+            <br />
+            @* <span><b>Server response: </b>@requestStatus</span>
+            <br /><br />
+            <span><b>Json sent: </b>@json</span> *@
+        </div>
     </div>
+}
+@if(showQuizForm != true)
+{
+    <div class="d-flex flex-wrap align-self-center justify-content-center flex-column">
+        <h3 class="title align-self-center flex-wrap">Quiz created!</h3>
+        <br/>
+        <h2 class="align-self-center flex-wrap">@quizModel.Title</h2>
+        <h3 class="align-self-center flex-wrap">@quizModel.Description</h3>
+    </div>
+    
+}
+
+<br /><br />
+@if (showQuizForm != true)
+{
+    @if (showQuestionForm == true)
+        {
+            <div class="d-flex flex-column">
+                <h3 class="title align-self-center flex-wrap">Add Question</h3>
+                <br />
+                <div class="d-flex flex-wrap align-self-center justify-content-center flex-column" style="max-width: 300px">
+                    <EditForm Model="@question" OnSubmit="PostQuestion">
+                        <p>
+                            <label for="question" class="form-label">Question: </label>
+                            <InputText id="question" class="form-control" @bind-Value="question.Question" />
+                        </p>
+                        <p>
+                            <label for="answer" class="form-label">Correct answer (1): </label>
+                            <InputText id="answer" class="form-control" @bind-Value="question.CorrectAnswer" />
+                        </p>
+                        <p>
+                            <label for="alt2" class="form-label">Alternativ answer (2): </label>
+                            <InputText id="alt2" class="form-control" @bind-Value="question.CorrectAnswer" />
+                        </p>
+                        <p>
+                            <label for="alt3" class="form-label">Alternativ answer (3): </label>
+                            <InputText id="alt3" class="form-control" @bind-Value="question.CorrectAnswer" />
+                        </p>
+                        <p>
+                            <label for="alt4" class="form-label">Alternativ answer (4): </label>
+                            <InputText id="alt4" class="form-control" @bind-Value="question.CorrectAnswer" />
+                        </p>
+                        <p>
+                            <label for="imagevid" class="form-label">Link to image or video (URL): </label>
+                            <InputText id="imagevid" class="form-control" @bind-Value="question.CorrectAnswer" />
+                        </p>
+                        <p>
+                            <label for="duration" class="form-label">Duration in seconds: </label>
+                            <InputNumber id="duration" class="form-control" @bind-Value="question.Duration" />
+                        </p>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </EditForm>
+                    <br />
+                    <span><b>Server response: </b>@requestStatus</span>
+                    <br /><br />
+                    @* <span class="flex-wrap"><b>Json sent: </b>@json2</span> *@
+                </div>
+            </div>
+        }
+    
+}
+    @if (showQuestionForm != true)
+    {
+        <h3 class="title align-self-center flex-wrap">Question added!</h3>
+        <button class="btn btn-primary align-self-center justify-content-center" style="margin: 20px;" @onclick="NewQuestion">Add new question</button>
+    }
+    
 </div>
 
+
 @code {
+    private bool showQuizForm = true;
+    private bool showQuestionForm = true;
+
+
     private CreateQuizDTO quizModel = new CreateQuizDTO();
     private static string? json;
-    private static HttpResponseMessage? requestStatus;
+    private static string requestStatus;
     private async Task PostQuiz()
     {
         var jsonPayLoad = JsonSerializer.Serialize(quizModel);
         json = jsonPayLoad;
         var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
         var response = await _http.PostAsync("api/quiz/create", content);
-        requestStatus = response;
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            requestStatus = "OK";
+            showQuizForm = false;
+        }
+        else
+        {
+            requestStatus = "BAD";
+        }
+
+    }
+
+    private CreateQuestionDTO question = new CreateQuestionDTO();
+    private static string? json2;
+    private void PostQuestion()
+    {
+        var jsonPayLoad = JsonSerializer.Serialize(question);
+        json2 = jsonPayLoad;
+        var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
+        question = new CreateQuestionDTO();
+        showQuestionForm = false;
+    }
+
+    private void NewQuestion()
+    {
+        showQuestionForm = true;
     }
 }

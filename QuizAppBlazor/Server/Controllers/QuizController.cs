@@ -50,8 +50,8 @@ namespace QuizAppBlazor.Server.Controllers
             var jsonPayLoad = JsonSerializer.Serialize(result);
             Console.WriteLine(jsonPayLoad);
 
-            _context.Add(result);
-            _context.SaveChanges();
+            //_context.Add(result);
+            //_context.SaveChanges();
             return Ok();
         }
     }
