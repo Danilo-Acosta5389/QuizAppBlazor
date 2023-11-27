@@ -4,6 +4,7 @@
 @using System.Text;
 @using System.Net;
 @inject HttpClient _http
+@inject NavigationManager Navigation
 
 <div class="d-flex flex-column">
 @if(showQuizForm == true)
@@ -83,7 +84,7 @@
                             <label for="duration" class="form-label">Duration in seconds: </label>
                             <InputNumber disabled="@{question.HasTimeLimit ? isDisabled : !isDisabled}" id="time-limit" class="form-control" @bind-Value="question.TimeLimit" />
                         </p>
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 30px;">Create</button>
                     </EditForm>
                     @* <br />
                     <span><b>Server response: </b>@quizId</span>
@@ -98,6 +99,7 @@
     {
         <h3 class="title align-self-center flex-wrap">Question added!</h3>
         <button class="btn btn-primary align-self-center justify-content-center" style="margin: 20px;" @onclick="NewQuestion">Add new question</button>
+        <button class="btn btn-primary align-self-center justify-content-center" style="margin: 10px; padding: 1rem;" @onclick="NavigateFromPage">🎉<strong>Done!</strong>🎉</button>
     }
     
 </div>
@@ -160,11 +162,16 @@
         showQuestionForm = true;
     }
 
-    
-    
+
+
     private void HasChanged()
     {
         Console.WriteLine("Checked");
         //isDisabled = !isDisabled;
+    }
+
+    private void NavigateFromPage()
+    {
+        Navigation.NavigateTo("/quizzes"); //forceload "true" may be added here as a second parameter if necessary
     }
 }

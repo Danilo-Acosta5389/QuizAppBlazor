@@ -1,0 +1,44 @@
+﻿@page "/quizzes"
+@using QuizAppBlazor.Shared.DTOs
+@inject HttpClient Http
+@inject NavigationManager Navigation
+<div class="d-flex flex-column">
+    <h1 class="align-self-center title flex-wrap">Pick a quiz!</h1>
+    <div class="d-flex flex-wrap align-self-center justify-content-center">
+        @if (quizzes == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            @foreach (var quiz in quizzes)
+            {
+                @* string link = quiz.Title + " " + quiz.Description; *@
+                <div class="card btn btn-primary" style="width: 18rem; margin: 15px;" @onclick="() => RedirectToQuiz(quiz.Title)">
+                    <div class="card-body">
+                        <h5 class="card-title">@quiz.Title</h5>
+                        <p class="card-text">@quiz.Description</p>
+                        @* <a href="#" class="btn btn-primary">Take quiz</a> *@
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+
+
+@code {
+    private GetQuizDTO[]? quizzes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        quizzes = await Http.GetFromJsonAsync<GetQuizDTO[]>("api/quiz");
+    }
+
+    private void RedirectToQuiz(string title)
+    {
+        Navigation.NavigateTo($"/quiz/{title}");
+    }
+}

@@ -44,13 +44,11 @@ namespace QuizAppBlazor.Server.Controllers
                 HasTimeLimit = newQuestion.HasTimeLimit,
                 TimeLimit = newQuestion.TimeLimit
             };
-
-            _context.Add(result);
-            _context.SaveChanges();
-
             var resultJson = JsonSerializer.Serialize(result);
             Console.WriteLine(resultJson);
 
+            _context.Add(result);
+            _context.SaveChanges();
             return Ok();
         }
     }

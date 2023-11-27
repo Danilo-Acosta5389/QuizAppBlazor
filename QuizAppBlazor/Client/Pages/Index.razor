@@ -1,37 +1,55 @@
 ﻿@page "/"
-@using QuizAppBlazor.Shared.DTOs
-@inject HttpClient Http
 <div class="d-flex flex-column">
-    <h1 class="align-self-center title flex-wrap">Pick a quiz!</h1>
-    <div class="d-flex flex-wrap align-self-center justify-content-center">
-        @if (quizzes == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            @foreach (var quiz in quizzes)
-            {
-                <div class="card btn btn-primary" style="width: 18rem; margin: 15px;">
-                    <div class="card-body">
-                        <h5 class="card-title">@quiz.Title</h5>
-                        <p class="card-text">@quiz.Description</p>
-                        @* <a href="#" class="btn btn-primary">Take quiz</a> *@
-                    </div>
-                </div>
-            }
-        }
+    <h1 class="align-self-center title flex-wrap text-light">Welcome <wbr />to <wbr />QuizApp!</h1>
+    <div class="d-flex flex-column flex-wrap align-self-center justify-content-center" style="max-width: 700px; margin: 20px;">
+        <p>Hello and welcome to QuizApp, the ultimate destination for trivia enthusiasts! 🌟</p>
+
+        <p>Are you ready to challenge your knowledge, learn new things, and have fun along the way? You're in the right place! Whether you're a seasoned quiz master or a casual player, QuizApp has something for everyone.</p>
+
+        <h2>Key Features:</h2>
+
+        <h3>1. Register and Login:</h3>
+        <ul>
+            <li>Get started by creating your account. It's quick, easy, and unlocks a world of quiz-tastic possibilities!</li>
+            <li>Already a member? Simply log in to access your personalized quiz experience.</li>
+        </ul>
+
+        <h3>2. Create Your Own Quizzes:</h3>
+        <ul>
+            <li>Showcase your expertise! Design and publish your quizzes on topics you love.</li>
+            <li>Share your creations with the QuizApp community and see who can conquer your challenges.</li>
+        </ul>
+
+        <h3>3. Take Quizzes:</h3>
+        <ul>
+            <li>Explore a diverse range of quizzes crafted by other users.</li>
+            <li>Test your knowledge on various subjects and discover new interests.</li>
+        </ul>
+
+        <h3>4. Score Tracking:</h3>
+        <ul>
+            <li>Keep tabs on your quiz triumphs! Track your scores and challenge yourself to beat your personal best.</li>
+            <li>Compete with friends or fellow QuizApp users to see who reigns supreme on the leaderboard.</li>
+        </ul>
+
+        <h3>5. Community Engagement:</h3>
+        <ul>
+            <li>Connect with other users who share your passion for trivia.</li>
+            <li>Comment, discuss, and celebrate each other's quiz achievements.</li>
+        </ul>
+
+        <h2>Get Started Now:</h2>
+
+        <p>Ready to embark on your quiz journey? Simply register, log in, and let the quizzing begin! Whether you're here to learn, compete, or just have a good time, QuizApp is here to make your experience enjoyable and engaging.</p>
+
+        <p>Let the quest for knowledge and fun commence!</p>
+        <div class="d-flex justify-content-center" style="width: 100%">
+            <a href="/authentication/register" class="btn btn-primary" style="max-width: 300px;">🚀 <strong>Start quizzing now!</strong> 🚀</a>
+        </div>
+        
     </div>
 </div>
 
 
-
-
 @code{
-    private GetQuizDTO[]? quizzes;
-
-    protected override async Task OnInitializedAsync()
-    {
-        quizzes = await Http.GetFromJsonAsync<GetQuizDTO[]>("api/quiz");
-    }
 }

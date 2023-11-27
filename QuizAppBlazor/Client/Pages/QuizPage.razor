@@ -1,0 +1,18 @@
+﻿@page "/quiz/{Title}"
+@using QuizAppBlazor.Shared.DTOs;
+@inject HttpClient Http
+
+<div class="d-flex flex-column">
+    <h2 class="title align-self-center flex-wrap">@Title</h2>
+    @* <p class="align-self-center flex-wrap">@Desc</p> *@
+    <br />
+    <div class="d-flex flex-wrap align-self-center justify-content-center flex-column" style="max-width: 300px">
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    // [Parameter]
+    // public string? Desc { get; set; }
+}
