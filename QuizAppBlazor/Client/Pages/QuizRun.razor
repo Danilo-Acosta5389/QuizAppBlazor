@@ -1,6 +1,8 @@
 ﻿@using QuizAppBlazor.Shared.DTOs;
+@using System.Text.Json;
+@using System.Text;
 @inject HttpClient Http
-
+@inject NavigationManager Navigation
 
 
 <div class="d-flex flex-wrap align-self-center justify-content-center flex-column align-content-center card-body"
@@ -9,7 +11,10 @@
     {
         if (!isRunning)
         {
-            <h3>Done!</h3>
+            <div style="text-align: center;">
+                <h2>You have @correctAnswers correct answers!</h2>
+                <button @onclick="Done" class="btn btn-primary" style="font-size:2rem">Done! 🥳</button>
+            </div>
         }
         else
         {
@@ -64,7 +69,8 @@
     private bool btnVisible = false;
     private bool isCorrect;
     private bool isIncorrect;
-
+    private int correctAnswers = 0;
+    private UserScoreDTO UserScore;
 
     private List<string> answerList = new List<string>();
 
@@ -79,6 +85,7 @@
         {
             isCorrect = true;
             isIncorrect = false;
+            correctAnswers++;
         }
         else
         {
@@ -100,6 +107,7 @@
         else
         {
             isRunning = false;
+            QuizFinished();
         }
 
         if (questions != null)
@@ -125,6 +133,19 @@
             list[k] = list[n];
             list[n] = value;
         }
+    }
+
+    private async Task QuizFinished()
+    {
+        UserScore = new UserScoreDTO() { QuizId = this.QuizId, CorrectAnswers = correctAnswers };
+        var jsonPayLoad = JsonSerializer.Serialize(UserScore);
+        var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
+        var response = await Http.PostAsync("api/score/post", content);
+    }
+
+    private void Done()
+    {
+        Navigation.NavigateTo("/quizzes");
     }
 
 
