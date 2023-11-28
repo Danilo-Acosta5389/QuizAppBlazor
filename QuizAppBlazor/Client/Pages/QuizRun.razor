@@ -2,24 +2,144 @@
 @inject HttpClient Http
 
 
-<div>
+
+<div class="d-flex flex-wrap align-self-center justify-content-center flex-column align-content-center card-body"
+     style=" border-radius: 10px; max-width:500px; background-color:whitesmoke; padding: 1.5rem; margin-bottom: 1rem">
     @if (questions != null)
     {
-        @foreach (var q in questions)
+        if (!isRunning)
         {
-            <p>@q.Question</p>
+            <h3>Done!</h3>
+        }
+        else
+        {
+            <div style="text-align: center;">
+                <img src="@questions[qIndex].ImageVideo" style="width: 100%; border-radius: 4px;" />
+                <h5 style="margin:2rem;">@questions[qIndex].Question</h5>
+            </div>
+
+            @for (int i = 0; i < answerList.Count; i++)
+            {
+                int index = i; //Local copy of i is needed due to issue with lambda expression in blazor webassembly
+                <button disabled="@isDisabled" @onclick="() => Answer(index)" class="btn btn-primary" style="margin:0.5rem;">@answerList[i]</button>
+            }
+            <br />
+            <div class="d-flex flex-row justify-content-between">
+                <p>Question @(qIndex + 1) / @(questions.Length)</p>
+                @if (isCorrect == true)
+                {
+                    <p>Correct answer!</p>
+                }
+                @if (isIncorrect == true)
+                {
+                    <p>OOoo nooo. Wrong babuu :(</p>
+                }
+
+                @if (btnVisible == false)
+                {
+                    <button @onclick="Next" class="btn btn-warning invisible">Next!</button>
+                }
+                else
+                {
+                    <button @onclick="Next" class="btn btn-warning visible">Next!</button>
+                }
+
+                
+
+
+            </div>
+            
         }
     }
 </div>
 
+
 @code {
     [Parameter]
     public Guid QuizId { get; set; }
+    private GetQuestionsDTO[]? questions;
+    private int qIndex = 0;
+    private bool isRunning = true;
+    private bool isDisabled = false;
+    private bool btnVisible = false;
+    private bool isCorrect;
+    private bool isIncorrect;
 
-    private GetQuestionsDTO[]? questions { get; set; }
+
+    private List<string> answerList = new List<string>();
+
+    public void Answer(int aIndex)
+    {
+        Console.WriteLine("Index is: " + aIndex);
+
+        isDisabled = true;
+        btnVisible = true;
+
+        if (answerList[aIndex] == questions[qIndex].CorrectAnswer)
+        {
+            isCorrect = true;
+            isIncorrect = false;
+        }
+        else
+        {
+            isCorrect = false;
+            isIncorrect = true;
+        }
+    }
+
+    public void Next()
+    {
+        if (qIndex < (questions.Length - 1))
+        {
+            qIndex++;
+            isDisabled = false;
+            btnVisible = false;
+            isCorrect = false;
+            isIncorrect = false;
+        }
+        else
+        {
+            isRunning = false;
+        }
+
+        if (questions != null)
+        {
+            answerList.Clear();
+            answerList.Add(questions[qIndex].CorrectAnswer);
+            answerList.Add(questions[qIndex].Alternativ2);
+            answerList.Add(questions[qIndex].Alternativ3);
+            answerList.Add(questions[qIndex].Alternativ4);
+            Shuffle(answerList);
+        }
+    }
+
+    private Random rng = new Random();
+    public void Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+
+
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine(QuizId);
         questions = await Http.GetFromJsonAsync<GetQuestionsDTO[]>($"api/question/{QuizId}");
+        if (questions != null)
+        {
+            answerList.Clear();
+            answerList.Add(questions[qIndex].CorrectAnswer);
+            answerList.Add(questions[qIndex].Alternativ2);
+            answerList.Add(questions[qIndex].Alternativ3);
+            answerList.Add(questions[qIndex].Alternativ4);
+
+            Shuffle(answerList);
+        }
     }
 }
