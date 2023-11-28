@@ -20,6 +20,16 @@ namespace QuizAppBlazor.Server.Controllers
             _context = context;
         }
 
+        // GET: api/question/{id}
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public IEnumerable<QuestionModel> GetQuestionById(Guid id)
+        {
+            Console.WriteLine(id);
+            var result = _context.Questions.Where(x => x.QuizId == id);
+            return result;
+        }
+
         // POST: api/question/create
         [HttpPost]
         [Route("create")]

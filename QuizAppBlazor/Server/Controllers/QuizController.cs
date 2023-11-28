@@ -22,9 +22,19 @@ namespace QuizAppBlazor.Server.Controllers
 
         // GET: api/quiz
         [HttpGet]
-        public List<QuizModel> GetAllQuizzes()
+        public IEnumerable<QuizModel> GetAllQuizzes()
         {
-            var result = _context.Quizzes.ToList<QuizModel>();
+            var result = _context.Quizzes;
+            return result;
+        }
+
+
+        // GET: api/quiz/{id}
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public QuizModel GetById(Guid id)
+        {
+            var result = _context.Quizzes.Where(x => x.Id == id).FirstOrDefault();
             return result;
         }
 

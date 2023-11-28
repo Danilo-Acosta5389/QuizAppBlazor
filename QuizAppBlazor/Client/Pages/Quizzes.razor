@@ -1,7 +1,10 @@
 ﻿@page "/quizzes"
+@using Blazored.LocalStorage;
 @using QuizAppBlazor.Shared.DTOs
 @inject HttpClient Http
+@* inject ILocalStorageService _localStorageService *@
 @inject NavigationManager Navigation
+
 <div class="d-flex flex-column">
     <h1 class="align-self-center title flex-wrap">Pick a quiz!</h1>
     <div class="d-flex flex-wrap align-self-center justify-content-center">
@@ -13,14 +16,15 @@
         {
             @foreach (var quiz in quizzes)
             {
-                @* string link = quiz.Title + " " + quiz.Description; *@
-                <div class="card btn btn-primary" style="width: 18rem; margin: 15px;" @onclick="() => RedirectToQuiz(quiz.Title)">
+                //Console.WriteLine(storedItem);
+                
+                <div class="card btn btn-primary" style="width: 18rem; margin: 15px;" @onclick="() => RedirectToQuiz(quiz.Id)">
                     <div class="card-body">
                         <h5 class="card-title">@quiz.Title</h5>
                         <p class="card-text">@quiz.Description</p>
-                        @* <a href="#" class="btn btn-primary">Take quiz</a> *@
                     </div>
                 </div>
+                //_localStorageService.ClearAsync();
             }
         }
     </div>
@@ -31,14 +35,17 @@
 
 @code {
     private GetQuizDTO[]? quizzes;
-
     protected override async Task OnInitializedAsync()
     {
         quizzes = await Http.GetFromJsonAsync<GetQuizDTO[]>("api/quiz");
+        //await _localStorageService.ClearAsync();
     }
 
-    private void RedirectToQuiz(string title)
+    private void RedirectToQuiz(Guid id)
     {
-        Navigation.NavigateTo($"/quiz/{title}");
+        //_localStorageService.SetItemAsync<Guid>("QuizId", id);
+        //Console.WriteLine("LS item is: " + id);
+        Navigation.NavigateTo($"/quiz/{id}");
+
     }
 }

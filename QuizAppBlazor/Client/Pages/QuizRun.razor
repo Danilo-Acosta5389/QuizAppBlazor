@@ -1,0 +1,25 @@
+﻿@using QuizAppBlazor.Shared.DTOs;
+@inject HttpClient Http
+
+
+<div>
+    @if (questions != null)
+    {
+        @foreach (var q in questions)
+        {
+            <p>@q.Question</p>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Guid QuizId { get; set; }
+
+    private GetQuestionsDTO[]? questions { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine(QuizId);
+        questions = await Http.GetFromJsonAsync<GetQuestionsDTO[]>($"api/question/{QuizId}");
+    }
+}

@@ -1,18 +1,48 @@
-﻿@page "/quiz/{Title}"
+﻿@page "/quiz/{Id:guid}"
+@* @using Blazored.LocalStorage; *@
 @using QuizAppBlazor.Shared.DTOs;
 @inject HttpClient Http
+@* @inject ILocalStorageService _localStorageService *@
+
 
 <div class="d-flex flex-column">
-    <h2 class="title align-self-center flex-wrap">@Title</h2>
-    @* <p class="align-self-center flex-wrap">@Desc</p> *@
+    <h1 class="title align-self-center flex-wrap">@quiz.Title</h1>
+    <h5 class="align-self-center flex-wrap" style="text-align:center;">@quiz.Description</h5>
     <br />
-    <div class="d-flex flex-wrap align-self-center justify-content-center flex-column" style="max-width: 300px">
-    </div>
+    @if (!quizActivated)
+    {
+        <button class="btn btn-primary align-self-center justify-content-center" style="margin: 10px; padding: 1rem;" @onclick="StartQuiz"><strong>Let's go!</strong>🚀</button>
+    }
+    else
+    {
+        <div class="d-flex flex-wrap align-self-center justify-content-center flex-column align-content-center card-body" 
+        style="border: 2px solid black; width:500px; height: 300px; background-color:whitesmoke">
+            <QuizRun QuizId="Id" />
+        </div>
+    }
 </div>
+
+
 
 @code {
     [Parameter]
-    public string Title { get; set; }
-    // [Parameter]
-    // public string? Desc { get; set; }
+    public Guid Id { get; set; }
+
+    private GetQuizDTO? quiz = new GetQuizDTO();
+    protected override async Task OnInitializedAsync()
+    {
+        quiz = await Http.GetFromJsonAsync<GetQuizDTO>($"api/quiz/{Id}");
+        //await _localStorageService.ClearAsync();
+    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     quizId = await _localStorageService.GetItemAsync<Guid>("QuizId");
+    //     Console.WriteLine(quizId);
+    // }
+    private bool quizActivated = false;
+    private void StartQuiz()
+    {
+        quizActivated = true;
+    }
+
 }
