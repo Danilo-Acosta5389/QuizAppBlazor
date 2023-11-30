@@ -31,14 +31,23 @@ namespace QuizAppBlazor.Server.Controllers
                 throw new ArgumentNullException("userId");
             }
 
-            var result = new ScoreModel() { LinkId = userScore.LinkId, UserId = userId, CorrectAnswers = userScore.CorrectAnswers };
+            var authorId = _context.Quizzes.Where(x => x.LinkId == userScore.LinkId).Select(x => x.UserId).FirstOrDefault();
+
+            var result = new ScoreModel() { LinkId = userScore.LinkId, UserId = userId, CorrectAnswers = userScore.CorrectAnswers, AuthorId = authorId };
             var jsonPayLoad = JsonSerializer.Serialize(result);
             Console.WriteLine(jsonPayLoad);
 
 
             // have try catch here
-            //_context.Add(result);
-            //_context.SaveChanges();
+            try
+            {
+                _context.Add(result);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return BadRequest("ERROR: " + e.Message);
+            }
             return Ok();
         }
     }
