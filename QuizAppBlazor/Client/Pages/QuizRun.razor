@@ -1,6 +1,7 @@
 ﻿@using QuizAppBlazor.Shared.DTOs;
 @using System.Text.Json;
 @using System.Text;
+@using System.Timers;
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
@@ -39,6 +40,10 @@
                 }
 
                 <h5 style="margin:2rem;">@questions[qIndex].Question</h5>
+                @if (questions[qIndex].HasTimeLimit == true)
+                {
+                    <p>Time left: @Time</p>
+                }
             </div>
 
 
@@ -49,8 +54,8 @@
                     <InputTextArea disabled="@isDisabled" @bind-Value="textModel.Text" rows="2"></InputTextArea>
                     <button disabled="@isDisabled" type="submit" class="btn btn-primary" style="margin-top: 15px; margin-bottom: 10px;">Answer</button>
                 </EditForm>
-                <p>Input: @textModel.Text</p>
-                <p>Correct: @questions[qIndex].CorrectAnswer</p>
+                @* <p>Input: @textModel.Text</p>
+                <p>Correct: @questions[qIndex].CorrectAnswer</p> *@
             }
             else
             {
@@ -71,7 +76,11 @@
                 }
                 @if (isIncorrect == true)
                 {
-                    <p>OOoo nooo. Wrong babuu :(</p>
+                    <p>Wrong answer babuu :(</p>
+                }
+                @if (isTimeOut == true)
+                {
+                    <p>Times out babuu!</p>
                 }
 
                 @if (btnVisible == false)
@@ -106,10 +115,55 @@
     private bool isIncorrect;
     private int correctAnswers = 0;
     private UserScoreDTO UserScore;
+    private System.Timers.Timer _timer = null!;
+    private int _secondsToRun = 0;
+    protected string Time { get; set; } = "00:00";
+    public bool isTimeOut = false;
+
+
+    public void StartTime(int secondsToRun)
+    {
+        _secondsToRun = secondsToRun;
+        if (_secondsToRun > 0)
+        {
+            Time = TimeSpan.FromSeconds(_secondsToRun).ToString(@"mm\:ss");
+            StateHasChanged();
+            _timer.Start();
+        }
+    }
+
+    public event Action TimerOut;
+    private async void OnTimedEvent(object? sender, ElapsedEventArgs e)
+    {
+        _secondsToRun--;
+        await InvokeAsync(() =>
+        {
+            //CHECK IF TIME HAS RUN OUT
+            if (_secondsToRun <= 0)
+            {
+                isTimeOut = true;
+                TimeOut();
+            }
+            Time = TimeSpan.FromSeconds(_secondsToRun).ToString(@"mm\:ss");
+            StateHasChanged();
+        });
+        if (_secondsToRun <= 0)
+        {
+            _timer.Stop();
+            TimerOut?.Invoke();
+        }
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+    }
+
+
+
 
 
     private TextInputModel textModel = new TextInputModel();
-
     public class TextInputModel
     {
         public string Text { get; set; }
@@ -119,6 +173,7 @@
 
     public void Answer(int aIndex)
     {
+        _timer.Stop();
         Console.WriteLine("Index is: " + aIndex);
 
         isDisabled = true;
@@ -139,6 +194,12 @@
 
     public void AnswerByText(string answer)
     {
+        _timer.Stop();
+        if (String.IsNullOrEmpty(answer))
+        {
+            answer = Guid.NewGuid().ToString();
+        }
+
         Console.WriteLine("Answer by text is: " + answer);
 
         isDisabled = true;
@@ -158,6 +219,15 @@
         }
     }
 
+
+    //TIMEOUT METHOD HERE, LOOKS LIKE ANSWER METHODS
+    public void TimeOut()
+    {
+        Console.WriteLine("Timeout is: " + isTimeOut );
+        isDisabled = true;
+        btnVisible = true;
+    }
+
     public void Next()
     {
         if (qIndex < (questions.Length - 1))
@@ -167,6 +237,7 @@
             btnVisible = false;
             isCorrect = false;
             isIncorrect = false;
+            isTimeOut = false;
         }
         else
         {
@@ -182,6 +253,11 @@
             answerList.Add(questions[qIndex].Alternativ3);
             answerList.Add(questions[qIndex].Alternativ4);
             Shuffle(answerList);
+
+            if (questions[qIndex].HasTimeLimit == true)
+            {
+                StartTime((int)questions[qIndex].TimeLimit);
+            }
         }
     }
 
@@ -215,7 +291,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("IIII SSEEEE THIIIISSS");
+        _timer = new System.Timers.Timer(1000);
+        _timer.Elapsed += OnTimedEvent;
+        _timer.AutoReset = true;
+
         questions = await Http.GetFromJsonAsync<GetQuestionsDTO[]>($"api/question/{Id}");
         if (questions != null)
         {
@@ -226,6 +305,12 @@
             answerList.Add(questions[qIndex].Alternativ4);
 
             Shuffle(answerList);
+
+            if (questions[qIndex].HasTimeLimit == true)
+            {
+                StartTime((int)questions[qIndex].TimeLimit);
+            }
         }
+        
     }
 }
