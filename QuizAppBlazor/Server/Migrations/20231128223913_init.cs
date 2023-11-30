@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace QuizAppBlazor.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -106,6 +106,20 @@ namespace QuizAppBlazor.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Score",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    QuizId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CorrectAnswers = table.Column<int>(type: "int", nullable: false),
+                    AuthorId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Score", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -219,6 +233,7 @@ namespace QuizAppBlazor.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LinkId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -237,51 +252,31 @@ namespace QuizAppBlazor.Server.Migrations
                 name: "Questions",
                 columns: table => new
                 {
-                    QuizId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Alternativ2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Alternativ3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Alternativ4 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserTextInput = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsCorrect = table.Column<bool>(type: "bit", nullable: false),
-                    ImageVideo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HasTimeLimit = table.Column<bool>(type: "bit", nullable: false),
-                    TimeLimit = table.Column<int>(type: "int", nullable: false)
+                    UserTextInput = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsTextInput = table.Column<bool>(type: "bit", nullable: true),
+                    ImageVideo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsImage = table.Column<bool>(type: "bit", nullable: true),
+                    IsVideo = table.Column<bool>(type: "bit", nullable: true),
+                    IsYoutubeVideo = table.Column<bool>(type: "bit", nullable: true),
+                    HasTimeLimit = table.Column<bool>(type: "bit", nullable: true),
+                    TimeLimit = table.Column<int>(type: "int", nullable: true),
+                    QuizId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Questions_Quizzes_QuizId",
                         column: x => x.QuizId,
                         principalTable: "Quizzes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserQuiz",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    QuizId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CorrectAnswers = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserQuiz", x => new { x.UserId, x.QuizId });
-                    table.ForeignKey(
-                        name: "FK_UserQuiz_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserQuiz_Quizzes_QuizId",
-                        column: x => x.QuizId,
-                        principalTable: "Quizzes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -368,11 +363,6 @@ namespace QuizAppBlazor.Server.Migrations
                 name: "IX_Quizzes_UserId",
                 table: "Quizzes",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserQuiz_QuizId",
-                table: "UserQuiz",
-                column: "QuizId");
         }
 
         /// <inheritdoc />
@@ -406,7 +396,7 @@ namespace QuizAppBlazor.Server.Migrations
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "UserQuiz");
+                name: "Score");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

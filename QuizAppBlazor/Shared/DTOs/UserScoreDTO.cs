@@ -8,7 +8,7 @@ namespace QuizAppBlazor.Shared.DTOs
 {
     public class UserScoreDTO
     {
-        public Guid QuizId { get; set; }
+        public string LinkId { get; set; }
         public int CorrectAnswers { get; set; }
     }
 }

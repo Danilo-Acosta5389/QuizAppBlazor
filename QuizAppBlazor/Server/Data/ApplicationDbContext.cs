@@ -17,19 +17,19 @@ namespace QuizAppBlazor.Server.Data
 
         public DbSet<QuizModel> Quizzes { get; set; }
 
-        public DbSet<UserQuizModel> UserQuiz { get; set; }
+        public DbSet<ScoreModel> Score { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<UserQuizModel>()
-                .HasKey(k => new { k.UserId, k.QuizId });
+            //modelBuilder.Entity<UserQuizModel>()
+            //    .HasKey(k => new { k.UserId, k.QuizId });
 
-            modelBuilder.Entity<QuestionModel>()
-                .HasKey(k => new { k.Id });
+            //modelBuilder.Entity<QuestionModel>()
+            //    .HasOne(q => q.Quiz).WithMany().OnDelete(DeleteBehavior.NoAction);
 
             //modelBuilder.Entity<QuizModel>()
-            //    .HasKey(k => new { k.Id });
+            //    .HasOne<ApplicationUser>(u => u.User).WithMany().OnDelete(DeleteBehavior.NoAction);
 
             //Database seeding
             //modelBuilder.Entity<QuizModel>().HasData(

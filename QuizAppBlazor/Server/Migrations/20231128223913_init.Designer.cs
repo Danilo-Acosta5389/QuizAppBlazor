@@ -12,8 +12,8 @@ using QuizAppBlazor.Server.Data;
 namespace QuizAppBlazor.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231126231905_QuestionKeyAndNullables")]
-    partial class QuestionKeyAndNullables
+    [Migration("20231128223913_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -402,14 +402,23 @@ namespace QuizAppBlazor.Server.Migrations
                     b.Property<string>("ImageVideo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsCorrect")
+                    b.Property<bool?>("IsImage")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsTextInput")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsVideo")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsYoutubeVideo")
                         .HasColumnType("bit");
 
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("QuizId")
+                    b.Property<Guid?>("QuizId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("TimeLimit")
@@ -435,6 +444,10 @@ namespace QuizAppBlazor.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LinkId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -449,22 +462,24 @@ namespace QuizAppBlazor.Server.Migrations
                     b.ToTable("Quizzes");
                 });
 
-            modelBuilder.Entity("QuizAppBlazor.Server.Models.UserQuizModel", b =>
+            modelBuilder.Entity("QuizAppBlazor.Server.Models.ScoreModel", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CorrectAnswers")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "QuizId");
+                    b.Property<Guid?>("QuizId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("QuizId");
+                    b.HasKey("UserId");
 
-                    b.ToTable("UserQuiz");
+                    b.ToTable("Score");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -521,10 +536,8 @@ namespace QuizAppBlazor.Server.Migrations
             modelBuilder.Entity("QuizAppBlazor.Server.Models.QuestionModel", b =>
                 {
                     b.HasOne("QuizAppBlazor.Server.Models.QuizModel", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Question")
+                        .HasForeignKey("QuizId");
 
                     b.Navigation("Quiz");
                 });
@@ -532,29 +545,20 @@ namespace QuizAppBlazor.Server.Migrations
             modelBuilder.Entity("QuizAppBlazor.Server.Models.QuizModel", b =>
                 {
                     b.HasOne("QuizAppBlazor.Server.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Quiz")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("QuizAppBlazor.Server.Models.UserQuizModel", b =>
+            modelBuilder.Entity("QuizAppBlazor.Server.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("QuizAppBlazor.Server.Models.QuizModel", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizAppBlazor.Server.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Quiz");
+                });
 
-                    b.Navigation("User");
+            modelBuilder.Entity("QuizAppBlazor.Server.Models.QuizModel", b =>
+                {
+                    b.Navigation("Question");
                 });
 #pragma warning restore 612, 618
         }

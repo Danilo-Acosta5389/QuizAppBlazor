@@ -1,12 +1,10 @@
-﻿@page "/quiz/{Id:guid}"
-@* @using Blazored.LocalStorage; *@
+﻿@page "/quiz/{LinkId}"
 @using QuizAppBlazor.Shared.DTOs;
 @inject HttpClient Http
 
-
 <div class="d-flex flex-column">
     <h1 class="title align-self-center flex-wrap">@quiz.Title</h1>
-    <h5 class="align-self-center flex-wrap" style="text-align:center;">@quiz.Description</h5>
+    <h5 class="align-self-center flex-wrap" style="text-align:center; max-width:600px; padding-top:1rem;">@quiz.Description</h5>
     <br />
     @if (!quizActivated)
     {
@@ -14,7 +12,7 @@
     }
     else
     {
-        <QuizRun QuizId="Id" />
+        <QuizRun Id=@LinkId />
     }
 </div>
 
@@ -22,19 +20,13 @@
 
 @code {
     [Parameter]
-    public Guid Id { get; set; }
+    public string LinkId { get; set; }
 
     private GetQuizDTO? quiz = new GetQuizDTO();
     protected override async Task OnInitializedAsync()
     {
-        quiz = await Http.GetFromJsonAsync<GetQuizDTO>($"api/quiz/{Id}");
-        //await _localStorageService.ClearAsync();
+        quiz = await Http.GetFromJsonAsync<GetQuizDTO>($"api/quiz/{LinkId}");
     }
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     quizId = await _localStorageService.GetItemAsync<Guid>("QuizId");
-    //     Console.WriteLine(quizId);
-    // }
     private bool quizActivated = false;
     private void StartQuiz()
     {

@@ -4,7 +4,6 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
-
 <div class="d-flex flex-wrap align-self-center justify-content-center flex-column align-content-center card-body"
      style=" border-radius: 10px; max-width:500px; background-color:whitesmoke; padding: 1.5rem; margin-bottom: 1rem">
     @if (questions != null)
@@ -19,15 +18,50 @@
         else
         {
             <div style="text-align: center;">
-                <img src="@questions[qIndex].ImageVideo" style="width: 100%; border-radius: 4px;" />
+                @if (questions[qIndex].IsImage == true)
+                {
+                    <img src="@questions[qIndex].ImageVideo" style="width: 100%; border-radius: 4px;" />
+                }
+                else if (questions[qIndex].IsVideo == true)
+                {
+                    <video style="margin:0px; padding:0px; width: 100%;" id="video" controls>
+                        <source src="@questions[qIndex].ImageVideo" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                }
+                else if (questions[qIndex].IsYoutubeVideo == true)
+                {
+                    <iframe id="youtube" style="width: 100%; max-width: 400px; max-height: 250px; height: 100vh;"
+                            src="//www.youtube.com/embed/@questions[qIndex].ImageVideo" 
+                        title="YouTube video player" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen></iframe>
+                }
+
                 <h5 style="margin:2rem;">@questions[qIndex].Question</h5>
             </div>
 
-            @for (int i = 0; i < answerList.Count; i++)
+
+
+            @if (questions[qIndex].IsTextInput == true)
             {
-                int index = i; //Local copy of i is needed due to issue with lambda expression in blazor webassembly
-                <button disabled="@isDisabled" @onclick="() => Answer(index)" class="btn btn-primary" style="margin:0.5rem;">@answerList[i]</button>
+                <EditForm disabled="@isDisabled" Model="@textModel" OnSubmit="() => AnswerByText(textModel.Text)" class="align-self-center d-flex flex-column" style="width:100%; max-width:300px;">
+                    <InputTextArea disabled="@isDisabled" @bind-Value="textModel.Text" rows="2"></InputTextArea>
+                    <button disabled="@isDisabled" type="submit" class="btn btn-primary" style="margin-top: 15px; margin-bottom: 10px;">Answer</button>
+                </EditForm>
+                <p>Input: @textModel.Text</p>
+                <p>Correct: @questions[qIndex].CorrectAnswer</p>
             }
+            else
+            {
+                @for (int i = 0; i < answerList.Count; i++)
+                {
+                    int index = i; //Local copy of i is needed due to issue with lambda expression in blazor webassembly
+                    <button disabled="@isDisabled" @onclick="() => Answer(index)" class="btn btn-primary" style="margin:0.5rem;">@answerList[i]</button>
+                }
+            }
+
+
             <br />
             <div class="d-flex flex-row justify-content-between">
                 <p>Question @(qIndex + 1) / @(questions.Length)</p>
@@ -61,7 +95,8 @@
 
 @code {
     [Parameter]
-    public Guid QuizId { get; set; }
+    public string Id { get; set; }
+
     private GetQuestionsDTO[]? questions;
     private int qIndex = 0;
     private bool isRunning = true;
@@ -71,6 +106,14 @@
     private bool isIncorrect;
     private int correctAnswers = 0;
     private UserScoreDTO UserScore;
+
+
+    private TextInputModel textModel = new TextInputModel();
+
+    public class TextInputModel
+    {
+        public string Text { get; set; }
+    }
 
     private List<string> answerList = new List<string>();
 
@@ -82,6 +125,27 @@
         btnVisible = true;
 
         if (answerList[aIndex] == questions[qIndex].CorrectAnswer)
+        {
+            isCorrect = true;
+            isIncorrect = false;
+            correctAnswers++;
+        }
+        else
+        {
+            isCorrect = false;
+            isIncorrect = true;
+        }
+    }
+
+    public void AnswerByText(string answer)
+    {
+        Console.WriteLine("Answer by text is: " + answer);
+
+        isDisabled = true;
+        btnVisible = true;
+
+        // Trim white space and make small caps
+        if (answer.Trim().ToLower() == questions[qIndex].CorrectAnswer.Trim().ToLower())
         {
             isCorrect = true;
             isIncorrect = false;
@@ -137,7 +201,7 @@
 
     private async Task QuizFinished()
     {
-        UserScore = new UserScoreDTO() { QuizId = this.QuizId, CorrectAnswers = correctAnswers };
+        UserScore = new UserScoreDTO() { LinkId = this.Id, CorrectAnswers = correctAnswers };
         var jsonPayLoad = JsonSerializer.Serialize(UserScore);
         var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
         var response = await Http.PostAsync("api/score/post", content);
@@ -151,7 +215,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        questions = await Http.GetFromJsonAsync<GetQuestionsDTO[]>($"api/question/{QuizId}");
+        Console.WriteLine("IIII SSEEEE THIIIISSS");
+        questions = await Http.GetFromJsonAsync<GetQuestionsDTO[]>($"api/question/{Id}");
         if (questions != null)
         {
             answerList.Clear();

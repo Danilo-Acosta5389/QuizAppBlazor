@@ -8,12 +8,10 @@ namespace QuizAppBlazor.Shared.DTOs
 {
     public class GetQuizDTO
     {
-        public Guid Id { get; set; }
+        public string LinkId { get; set; }
 
         public string? Title { get; set; }
 
         public string? Description { get; set; }
-
-        public string? UserId { get; set; }
     }
 }

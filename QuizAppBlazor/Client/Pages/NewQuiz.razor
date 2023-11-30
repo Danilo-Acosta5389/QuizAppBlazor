@@ -3,6 +3,7 @@
 @using System.Text.Json;
 @using System.Text;
 @using System.Net;
+@using System.Text.RegularExpressions;
 @inject HttpClient _http
 @inject NavigationManager Navigation
 
@@ -24,10 +25,6 @@
                 </p>
                 <button type="submit" class="btn btn-primary">Create</button>
             </EditForm>
-            <br />
-            @* <span><b>Server response: </b>@requestStatus</span>
-            <br /><br />
-            <span><b>Json sent: </b>@json</span> *@
         </div>
     </div>
 }
@@ -37,7 +34,10 @@
         <h3 class="title align-self-center flex-wrap">Quiz created!</h3>
         <br/>
         <h2 class="align-self-center flex-wrap">@quiz.Title</h2>
-        <h3 class="align-self-center flex-wrap">@quiz.Description</h3>
+            <h4 class="align-self-center flex-wrap" style="max-width: 600px; text-align:center;">@quiz.Description</h4>
+            <hr>
+        <br/>
+            <h5 style="text-align:center; max-width: 600px;">Share your quiz with your friends, here is your quiz link: <span>https://localhost:7208/quiz/@linkId</span></h5>
     </div>
     
 }
@@ -60,36 +60,95 @@
                             <label for="answer" class="form-label">Correct answer: </label>
                             <InputText id="answer" class="form-control" @bind-Value="question.CorrectAnswer" />
                         </p>
-                        <p>
-                            <label for="alt2" class="form-label">Alternativ: </label>
-                            <InputText id="alt2" class="form-control" @bind-Value="question.Alternativ2" />
+                        <p style="padding:1rem; padding-top:1.5rem;">
+                            <label for="is-text-input" class="form-label"><span style="padding-right: 5px;">Answer with textbox: </span></label>
+                            <InputCheckbox id="is-text-input" @bind-Value="question.IsTextInput" />
                         </p>
                         <p>
-                            <label for="alt3" class="form-label">Alternativ: </label>
-                            <InputText id="alt3" class="form-control" @bind-Value="question.Alternativ3" />
+                            <label for="alt2" class="form-label">Option: </label>
+                            <InputText 
+                                disabled="@{question.IsTextInput ? !hasTextBox : hasTextBox}" 
+                                id="alt2" class="form-control" @bind-Value="question.Alternativ2" />
                         </p>
                         <p>
-                            <label for="alt4" class="form-label">Alternativ: </label>
-                            <InputText id="alt4" class="form-control" @bind-Value="question.Alternativ4" />
+                            <label for="alt3" class="form-label">Option: </label>
+                            <InputText disabled="@{question.IsTextInput ? !hasTextBox : hasTextBox}" 
+                            id="alt3" class="form-control" @bind-Value="question.Alternativ3" />
                         </p>
                         <p>
-                            <label for="imagevid" class="form-label">Link to image or video (URL): </label>
-                            <InputText id="imagevid" class="form-control" @bind-Value="question.ImageVideo" />
+                            <label for="alt4" class="form-label">Option: </label>
+                            <InputText disabled="@{question.IsTextInput ? !hasTextBox : hasTextBox}" 
+                            id="alt4" class="form-control" @bind-Value="question.Alternativ4" />
                         </p>
+                        <div class="d-flex flex-wrap" style="padding:1rem;">
+                            <label for="mediaType">Media source type: <span style="padding-right:5px;"></span></label>
+                            <select stylr="margin-left: 10px;" id="mediaType" @bind="mediaType">
+                                <option value="">Nothing</option>
+                                <option value="image">Image</option>
+                                <option value="video">Video</option>
+                                <option value="youtube">Youtube</option>
+                            </select>
+                            <div class="d-flex flex-wrap" style="padding: 1rem;">
+                                @if (mediaType == "image")
+                                {
+                                    <p>To ensure optimal display of your image, please ensure that the provided URL string concludes with either .jpg, .jpeg, or .png.</p>
+                                    <p style="background-color:white; border-radius: 4px; padding: 5px;">Example: <br />https://images.thedirect.com/<wbr>media/article_full/<wbr>star-wars-timeline-movies-shows.jpg </p>
+                                }
+                                else if (mediaType == "video")
+                                {
+                                    <p>To ensure optimal display of your video, please ensure that the provided URL string contains .mp4 somewhere in the URL string.</p>
+                                    <p style="background-color:white; border-radius: 4px; padding: 5px;">Example: <br /> https://player.vimeo.com/<wbr>external/<wbr>314181352.hd.mp4?s=03e7a8ddba<wbr>6566f8a62cd7f8a<wbr>8da7d79461c3dbd&profile_id=<wbr>172&oauth2_<wbr>token_id=57447761</p>
+                                }
+                                else if (mediaType == "youtube")
+                                {
+                                    <p>To ensure optimal display of your Youtube video, please ensure that the you only provided a Youtube video ID.</p>
+                                    <p style="flex-wrap:wrap; background-color:white; border-radius: 4px; padding: 5px;">Example: <br />https://www.youtube.com<wbr>/embed/tgbNymZ7vqY ⬅️ <wbr> notice the characters after the "embed/" part <br /> tgbNymZ7vqY 👈 <wbr> that's what you want.</p>
+                                }
+                            </div>
+                        </div>
                         <p>
-                            <label for="timelimit" class="form-label">Has time limit: </label>
+                            <label for="imagevid" class="form-label">Link to image or video <wbr>OR youtube video ID: </label>
+                            @if (!String.IsNullOrEmpty(question.ImageVideo))
+                            {
+                                <p style="border-radius: 4px; padding: 5px; background-color:red; color:white; width: 100%; max-width: 320px">If no content appears, try new link or check that media source is set to correct type.<br/><br/>Some times, the input field has to be emptied before video appears. This issue does not affect image or youtube input.</p>
+                            }
+                            <InputText disabled="@{string.IsNullOrEmpty(mediaType) ? true : false}" id="imagevid" class="form-control" @bind-Value="question.ImageVideo" />
+                        </p>
+                        <div class="d-flex flex-column">
+                            @if (!String.IsNullOrEmpty(question.ImageVideo))
+                            {
+                                @switch (mediaType)
+                                {
+                                    case "image":
+                                        <label for="img" style="">Image preview</label>
+                                        <img id="img" src="@question.ImageVideo" width="300">
+                                        break;
+                                    case "video":
+                                        <label for="video">Video preview</label>
+                                        <video style="margin:0px; padding:0px;" id="video"width="320" height="200" controls loop>
+                                            <source src="@question.ImageVideo" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        break;
+                                    case "youtube":
+                                        <label for="youtube">Youtube video preview</label>
+                                        <iframe id="youtube" width="320" height="220" src="//www.youtube.com/embed/@question.ImageVideo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                        break;
+
+                                }
+                            }
+                            
+                        </div>
+                        <p style="padding:1rem;">
+                            <label for="timelimit" class="form-label">Has time limit: <span style="padding-right:5px;"></span></label>
                             <InputCheckbox id="has-time-limit" @bind-Value="question.HasTimeLimit" />
                         </p>
                         <p >
                             <label for="duration" class="form-label">Duration in seconds: </label>
-                            <InputNumber disabled="@{question.HasTimeLimit ? isDisabled : !isDisabled}" id="time-limit" class="form-control" @bind-Value="question.TimeLimit" />
+                            <InputNumber disabled="@{question.HasTimeLimit ? false : true}" id="time-limit" class="form-control" @bind-Value="question.TimeLimit" />
                         </p>
                         <button type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 30px;">Create</button>
                     </EditForm>
-                    @* <br />
-                    <span><b>Server response: </b>@quizId</span>
-                    <br /><br />
-                    <span class="flex-wrap"><b>Json sent: </b>@json2</span> *@
                 </div>
             </div>
         }
@@ -104,55 +163,81 @@
     
 </div>
 
-@{
-    Console.WriteLine("Has time limit: " + question.HasTimeLimit);
-}
-
 @code {
 
     //Quiz form
     private bool showQuizForm = true;
 
     private CreateQuizDTO quiz = new CreateQuizDTO();
-    private static string? json;
-    private static string requestStatus;
-    private Guid quizId;
+    private static string? requestStatus;
+    private string? linkId;
+    private Guid quizId2;
 
     private async Task PostQuiz()
     {
-        var jsonPayLoad = JsonSerializer.Serialize(quiz);
-        json = jsonPayLoad;
-        var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
-        var response = await _http.PostAsync("api/quiz/create", content);
-        if (response.StatusCode == HttpStatusCode.OK)
+        try
         {
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Guid>(responseContent);
-            quizId = result;
-            Console.WriteLine(result);
-            showQuizForm = false;
+            var jsonPayLoad = JsonSerializer.Serialize(quiz);
+            Console.WriteLine("Json: " + jsonPayLoad);
+            var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
+            Console.WriteLine("Content: " + content);
+            var response = await _http.PostAsync("api/quiz/create", content);
+            //Console.WriteLine("direct response: " + response);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<string>(responseContent);
+                linkId = result;
+                Console.WriteLine("API request result in JSON: " + result);
+                showQuizForm = false;
+            }
+            else
+            {
+                Console.WriteLine("BAAAAAAAAAAAAD REEEQUUUEST!!!!!!!");
+                requestStatus = "BAD";
+            }
         }
-        else
+        catch (Exception error)
         {
-            requestStatus = "BAD";
+            Console.WriteLine(requestStatus + " HEEEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE " + error);
         }
+
+
 
     }
 
 
     //Question Form
     private bool showQuestionForm = true;
-    private bool isDisabled = false;
+    private bool hasTimeLimit = false;
+    private bool hasTextBox = false;
+    private string? mediaType = "";
     private CreateQuestionDTO question = new CreateQuestionDTO();
-    private static string? json2;
 
     private async Task PostQuestion()
     {
-        question.QuizId = quizId;
+
+        //add mediaType 
+        if (mediaType == "image")
+        {
+            question.IsImage = true;
+        }
+        else if (mediaType == "video")
+        {
+            question.IsVideo = true;
+        }
+        else if (mediaType == "youtube")
+        {
+            question.IsYoutubeVideo = true;
+        }
+
+        question.LinkId = linkId;
         var jsonPayLoad = JsonSerializer.Serialize(question);
-        json2 = jsonPayLoad;
+        Console.WriteLine("Json: " + jsonPayLoad);
         var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
+        Console.WriteLine("Content: " + content);
         var response = await _http.PostAsync("api/question/create", content);
+        Console.WriteLine("Api response: " + response);
         showQuestionForm = false;
     }
 

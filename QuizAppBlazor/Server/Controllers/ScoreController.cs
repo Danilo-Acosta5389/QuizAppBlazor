@@ -31,12 +31,14 @@ namespace QuizAppBlazor.Server.Controllers
                 throw new ArgumentNullException("userId");
             }
 
-            var result = new UserQuizModel() { QuizId = userScore.QuizId, UserId = userId, CorrectAnswers = userScore.CorrectAnswers };
+            var result = new ScoreModel() { LinkId = userScore.LinkId, UserId = userId, CorrectAnswers = userScore.CorrectAnswers };
             var jsonPayLoad = JsonSerializer.Serialize(result);
             Console.WriteLine(jsonPayLoad);
 
-            _context.Add(result);
-            _context.SaveChanges();
+
+            // have try catch here
+            //_context.Add(result);
+            //_context.SaveChanges();
             return Ok();
         }
     }
