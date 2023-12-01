@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to QuizApp, a versatile quiz application built on the ASP.NET Blazor WebAssembly (hosted) framework, utilizing .NET 7. This project was developed as a school assignment to meet specific requirements, outlined below:
+Welcome to QuizApp, a versatile quiz application built on the ASP.NET Blazor WebAssembly framework, utilizing .NET 7. The application is "hosted" upon creation, which means it consists of three distinct projects within the same solution: the client (Blazor WebAssembly), the server (ASP.NET Core Web API), and a shared project, where files are shared between the client and server. This project was developed as a school assignment to meet specific requirements, outlined below:
 
 ## School Assignment Requirements
 
