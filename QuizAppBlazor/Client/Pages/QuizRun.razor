@@ -25,7 +25,7 @@
                 }
                 else if (questions[qIndex].IsVideo == true)
                 {
-                    <video style="margin:0px; padding:0px; width: 100%;" id="video" controls>
+                    <video style="margin:0px; padding:0px; width: 100%;" id="video" controls autoplay>
                         <source src="@questions[qIndex].ImageVideo" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
@@ -33,7 +33,7 @@
                 else if (questions[qIndex].IsYoutubeVideo == true)
                 {
                     <iframe id="youtube" style="width: 100%; max-width: 400px; max-height: 250px; height: 100vh;"
-                            src="//www.youtube.com/embed/@questions[qIndex].ImageVideo" 
+                            src="//www.youtube.com/embed/@questions[qIndex].ImageVideo"
                         title="YouTube video player" frameborder="0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                         allowfullscreen></iframe>
@@ -115,12 +115,13 @@
     private bool isIncorrect;
     private int correctAnswers = 0;
     private UserScoreDTO UserScore;
-    private System.Timers.Timer _timer = null!;
+    private System.Timers.Timer _timer = null!;  //Time variable
     private int _secondsToRun = 0;
-    protected string Time { get; set; } = "00:00";
+    protected string Time { get; set; } = "00:00";   //Time UI variable and format
     public bool isTimeOut = false;
 
 
+    //Starts the time
     public void StartTime(int secondsToRun)
     {
         _secondsToRun = secondsToRun;
@@ -132,6 +133,8 @@
         }
     }
 
+
+    //Keeps time runnning
     public event Action TimerOut;
     private async void OnTimedEvent(object? sender, ElapsedEventArgs e)
     {
@@ -261,6 +264,8 @@
         }
     }
 
+
+    //Shuffle method
     private Random rng = new Random();
     public void Shuffle<T>(List<T> list)
     {
@@ -277,7 +282,7 @@
 
     private async Task QuizFinished()
     {
-        UserScore = new UserScoreDTO() { LinkId = this.Id, CorrectAnswers = correctAnswers };
+        UserScore = new UserScoreDTO() { LinkId = Id, CorrectAnswers = correctAnswers };
         var jsonPayLoad = JsonSerializer.Serialize(UserScore);
         var content = new StringContent(jsonPayLoad, Encoding.UTF8, "application/json");
         var response = await Http.PostAsync("api/score/post", content);

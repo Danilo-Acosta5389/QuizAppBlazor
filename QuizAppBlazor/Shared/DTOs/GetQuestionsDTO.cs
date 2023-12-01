@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,8 +20,6 @@ namespace QuizAppBlazor.Shared.DTOs
         public string? Alternativ3 { get; set; }
 
         public string? Alternativ4 { get; set; }
-
-        public string? UserTextInput { get; set; }  //THIS FIELD IS NOT NEEDED
 
         public bool? IsTextInput { get; set; }
 
