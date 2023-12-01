@@ -149,3 +149,13 @@ however, if i would, here are some thigs i would consider doing:
     - CSS should too ^.
  
 There are a lot of things that could be done better. It was definitely a fun project. I would like to continue improving it, but if don't, that's all right. :)
+
+
+### Some pictures of the app
+![Skärmbild 2023-12-01 035012](https://github.com/Danilo-Acosta5389/QuizAppBlazor/assets/113366808/bd354223-56d3-4412-bfd3-181ddfdd189f)
+![Skärmbild 2023-12-01 035154](https://github.com/Danilo-Acosta5389/QuizAppBlazor/assets/113366808/37ec3c46-759d-4db4-aadc-d0db5d3c1447)
+![Skärmbild 2023-12-01 034914](https://github.com/Danilo-Acosta5389/QuizAppBlazor/assets/113366808/ec888baa-ffe3-459d-8925-e72535206ab7)
+![Skärmbild 2023-12-01 035358](https://github.com/Danilo-Acosta5389/QuizAppBlazor/assets/113366808/80133966-d82a-4b8d-b881-9c3a66e9a422)
+https://github.com/Danilo-Acosta5389/QuizAppBlazor/assets/113366808/a960e1f4-e7eb-4b79-8089-a945de3fc644
+![Skärmbild 2023-12-01 041236](https://github.com/Danilo-Acosta5389/QuizAppBlazor/assets/113366808/16e03ea1-6b6f-4790-8d23-af42bc10ad2f)
+
