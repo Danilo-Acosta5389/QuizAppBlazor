@@ -15,30 +15,30 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a href="/" class="nav-link text-dark">Home</a>
+        <a href="/" class="nav-link text-light">Home</a>
     </li>
     <li class="nav-item">
-        <a href="/newquiz" class="nav-link text-dark">New Quiz</a>
+            <a href="/newquiz" class="nav-link text-light">New Quiz</a>
     </li>
     <li class="nav-item">
-        <a href="/profile" class="nav-link text-dark">Profile</a>
+            <a href="/profile" class="nav-link text-light">Profile</a>
     </li>
     <li>
-        <a href="authentication/profile" class="nav-link text-dark">Account settings</a>
+            <a href="authentication/profile" class="nav-link text-light">Settings</a>
     </li> 
     <li class="nav-item">
         <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                <button type="submit" class="nav-link btn btn-link text-light">Logout</button>
         </form>
     </li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">Register</a>
+            <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">Register</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">Login</a>
+            <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">Login</a>
     </li>
 }
 </ul>

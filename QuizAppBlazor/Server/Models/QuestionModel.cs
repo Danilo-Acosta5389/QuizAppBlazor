@@ -26,9 +26,6 @@ namespace QuizAppBlazor.Server.Models
         [AllowNull]
         public string? Alternativ4 { get; set; }
 
-        [AllowNull]
-        public string? UserTextInput { get; set; }   //THIS FIELD IS NOT NEEDED
-
         // If this is false then it is options
         [AllowNull]
         public bool? IsTextInput { get; set; }

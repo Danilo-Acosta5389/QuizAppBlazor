@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,10 @@ namespace QuizAppBlazor.Shared.DTOs
     {
         public string LinkId { get; set; }
 
+        [Required]
         public string Question { get; set; }
 
+        [Required]
         public string CorrectAnswer { get; set; }
 
         public string Alternativ2 { get; set; } = string.Empty;
@@ -34,6 +37,6 @@ namespace QuizAppBlazor.Shared.DTOs
 
         public bool HasTimeLimit { get; set; } = true;
 
-        public int TimeLimit { get; set; } = 60;
+        public int TimeLimit { get; set; } = 20;
     }
 }

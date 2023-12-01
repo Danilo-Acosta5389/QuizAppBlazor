@@ -1,5 +1,6 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\
-for details on configuring this project to bundle and minify static web assets. */
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Playpen+Sans:wght@400;500;600&family=Press+Start+2P&family=Rajdhani:wght@600&family=Titan+One&display=swap');
+
 
 a.navbar-brand {
   white-space: normal;
@@ -32,9 +33,12 @@ a {
   outline: black auto 1px;
 }
 
-html {
-  font-size: 14px;
+html, body {
+    font-size: 16px;
+    font-family: Rajdhani;
 }
+
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -80,4 +84,13 @@ body {
   overflow: scroll;
   white-space: nowrap;
   line-height: 60px;
+}
+
+
+
+.title {
+    font-family: 'Press start 2P';
+    color: yellow;
+    text-shadow: 2px 2px 5px black;
+    text-align: center;
 }

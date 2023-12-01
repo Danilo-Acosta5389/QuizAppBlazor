@@ -4,20 +4,20 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
+<ul class="navbar-nav bg-primary">
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a href="/" class="nav-link text-dark">Home</a>
+            <a href="/" class="nav-link text-light">Home</a>
     </li>
     <li class="nav-item">
-        <a href="/newquiz" class="nav-link text-dark">New Quiz</a>
+            <a href="/newquiz" class="nav-link text-light">New Quiz</a>
     </li>
     <li class="nav-item">
-        <a href="/profile" class="nav-link text-dark">Profile</a>
+            <a href="/profile" class="nav-link text-light">Profile</a>
     </li>
     <li>
-        <a href="authentication/profile" class="nav-link text-dark">Account settings</a>
+            <a href="authentication/profile" class="nav-link text-light">Settings</a>
     </li>
     <li class="nav-item">
         <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
@@ -28,10 +28,13 @@
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <a href="/" class="nav-link text-light">Home</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+            <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
 }
 </ul>
