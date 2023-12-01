@@ -129,6 +129,10 @@ It is unlikely i will work any further on this project.
 however, if i would, here are some thigs i would consider doing:
 
 - Edit and delete functionality.
+- Enhanced linking functionality: If a user receives a link without being logged in, they will be prompted to log in. Once logged in, they will proceed to the quiz.
+- Correct, false or timeout should appear in a better fashion.
+- Possibility of uploading image and video file.
+- Host app online
 - More statistics, like:
     - user score on all quizzes,
     - user score on quizzes made by others,
@@ -140,15 +144,15 @@ however, if i would, here are some thigs i would consider doing:
     - profile picture,
     - total score,
     - link to profile
-- On server side:
+- Other improvements on server side:
     - tighter security,
     - better design pattern
-- On client side:
+- Other improvements on client side:
     - more use of components,
     - C# code should go as a subfile to the razor page
     - CSS should too ^.
  
-There are a lot of things that could be done better. It was definitely a fun project. I would like to continue improving it, but if don't, that's all right. :)
+There are a lot of things that could be done better. It was definitely a fun project. I would like to continue improving it, but if i don't, that's all right. :)
 
 
 ### Some pictures of the app
