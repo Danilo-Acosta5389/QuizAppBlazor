@@ -62,7 +62,19 @@
                 @for (int i = 0; i < answerList.Count; i++)
                 {
                     int index = i; //Local copy of i is needed due to issue with lambda expression in blazor webassembly
-                    <button disabled="@isDisabled" @onclick="() => Answer(index)" class="btn btn-primary" style="margin:0.5rem;">@answerList[i]</button>
+                    if (isCorrect == true || isIncorrect == true)
+                    {
+
+                        <button disabled="@isDisabled" @onclick="() => Answer(index)" class=@(answerList[index] == questions[qIndex].CorrectAnswer ? "btn btn-success" : (index == selectedIndex ? "btn btn-danger" : "btn btn-primary")) style="margin:0.5rem;">@answerList[i]</button>
+
+                    }
+                    else
+                    {
+                        <button disabled="@isDisabled" @onclick="() => Answer(index)" class="btn btn-primary" style="margin:0.5rem;">@answerList[i]</button>
+                    }
+                    
+
+                    
                 }
             }
 
@@ -72,15 +84,15 @@
                 <p>Question @(qIndex + 1) / @(questions.Length)</p>
                 @if (isCorrect == true)
                 {
-                    <p>Correct answer!</p>
+                    <p>Correct answer! 🥳</p>
                 }
                 @if (isIncorrect == true)
                 {
-                    <p>Wrong answer babuu :(</p>
+                    <p>Wrong answer! 😭</p>
                 }
                 @if (isTimeOut == true)
                 {
-                    <p>Times out babuu!</p>
+                    <p>Times out 😴</p>
                 }
 
                 @if (btnVisible == false)
@@ -119,7 +131,7 @@
     private int _secondsToRun = 0;
     protected string Time { get; set; } = "00:00";   //Time UI variable and format
     public bool isTimeOut = false;
-
+    int selectedIndex = -1;
 
     //Starts the time
     public void StartTime(int secondsToRun)
@@ -187,11 +199,13 @@
             isCorrect = true;
             isIncorrect = false;
             correctAnswers++;
+            selectedIndex = -1;
         }
         else
         {
             isCorrect = false;
             isIncorrect = true;
+            selectedIndex = aIndex;
         }
     }
 
