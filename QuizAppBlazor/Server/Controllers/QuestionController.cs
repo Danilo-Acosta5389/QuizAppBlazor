@@ -64,7 +64,7 @@ namespace QuizAppBlazor.Server.Controllers
         [Route("create")]
         public IActionResult CreateQuestion([FromBody]CreateQuestionDTO newQuestion)
         {
-            Console.WriteLine("HEEELLLOOO");
+            //Console.WriteLine("HEEELLLOOO");
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
