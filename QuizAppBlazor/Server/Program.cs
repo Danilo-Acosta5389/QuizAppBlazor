@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using QuizAppBlazor.Server;
 using QuizAppBlazor.Server.Data;
 using QuizAppBlazor.Server.Models;
-using Microsoft.AspNetCore.Identity;
-using QuizAppBlazor.Server;
 
 namespace QuizAppBlazor
 {
