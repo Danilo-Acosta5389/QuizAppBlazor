@@ -49,10 +49,10 @@ namespace QuizAppBlazor
             //    options.HttpsPort = 5001;
             //});
 
-            //var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
             // Add services to the container.
-            var connectionString = CString.connectionString ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            //var connectionString = connectionString ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
