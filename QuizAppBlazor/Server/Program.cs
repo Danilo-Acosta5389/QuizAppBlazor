@@ -63,7 +63,7 @@ namespace QuizAppBlazor
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequireDigit = false;
+                options.Password.RequireDigit = false; 
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
