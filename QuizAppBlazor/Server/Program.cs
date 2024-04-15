@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QuizAppBlazor.Server;
 using QuizAppBlazor.Server.Data;
 using QuizAppBlazor.Server.Models;
+using System.Security.Cryptography.X509Certificates;
 
 namespace QuizAppBlazor
 {
@@ -11,6 +12,43 @@ namespace QuizAppBlazor
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddCertificateForwarding(options =>
+            {
+                options.CertificateHeader = "X-SSL-CERT";
+
+                options.HeaderConverter = headerValue =>
+                {
+                    X509Certificate2? clientCertificate = null;
+
+                    if (!string.IsNullOrWhiteSpace(headerValue))
+                    {
+                        clientCertificate = new X509Certificate2(StringToByteArray(headerValue));
+                    }
+
+                    return clientCertificate!;
+
+                    static byte[] StringToByteArray(string hex)
+                    {
+                        var numberChars = hex.Length;
+                        var bytes = new byte[numberChars / 2];
+
+                        for (int i = 0; i < numberChars; i += 2)
+                        {
+                            bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+                        }
+
+                        return bytes;
+                    }
+                };
+            });
+
+            //builder.Services.AddHttpsRedirection(options =>
+            //{
+            //    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+            //    options.HttpsPort = 5001;
+            //});
+
             //var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
             // Add services to the container.
@@ -65,7 +103,7 @@ namespace QuizAppBlazor
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseCertificateForwarding();
             app.UseHttpsRedirection();
 
             app.UseBlazorFrameworkFiles();
