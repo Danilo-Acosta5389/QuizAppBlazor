@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QuizAppBlazor.Server;
 using QuizAppBlazor.Server.Data;
 using QuizAppBlazor.Server.Models;
-using System.Security.Cryptography.X509Certificates;
+//using System.Security.Cryptography.X509Certificates;
 
 namespace QuizAppBlazor
 {
@@ -13,35 +13,35 @@ namespace QuizAppBlazor
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddCertificateForwarding(options =>
-            {
-                options.CertificateHeader = "X-SSL-CERT";
+            //builder.Services.AddCertificateForwarding(options =>
+            //{
+            //    options.CertificateHeader = "X-SSL-CERT";
 
-                options.HeaderConverter = headerValue =>
-                {
-                    X509Certificate2? clientCertificate = null;
+            //    options.HeaderConverter = headerValue =>
+            //    {
+            //        X509Certificate2? clientCertificate = null;
 
-                    if (!string.IsNullOrWhiteSpace(headerValue))
-                    {
-                        clientCertificate = new X509Certificate2(StringToByteArray(headerValue));
-                    }
+            //        if (!string.IsNullOrWhiteSpace(headerValue))
+            //        {
+            //            clientCertificate = new X509Certificate2(StringToByteArray(headerValue));
+            //        }
 
-                    return clientCertificate!;
+            //        return clientCertificate!;
 
-                    static byte[] StringToByteArray(string hex)
-                    {
-                        var numberChars = hex.Length;
-                        var bytes = new byte[numberChars / 2];
+            //        static byte[] StringToByteArray(string hex)
+            //        {
+            //            var numberChars = hex.Length;
+            //            var bytes = new byte[numberChars / 2];
 
-                        for (int i = 0; i < numberChars; i += 2)
-                        {
-                            bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-                        }
+            //            for (int i = 0; i < numberChars; i += 2)
+            //            {
+            //                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            //            }
 
-                        return bytes;
-                    }
-                };
-            });
+            //            return bytes;
+            //        }
+            //    };
+            //});
 
             //builder.Services.AddHttpsRedirection(options =>
             //{
