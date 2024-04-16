@@ -1,8 +1,7 @@
-using Blazored.LocalStorage;
+//using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using QuizAppBlazor.Client;
 
 namespace QuizAppBlazor.Client
 {
@@ -13,7 +12,7 @@ namespace QuizAppBlazor.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
-
+            //builder.Services.AddBlazoredLocalStorageAsSingleton();
             builder.Services.AddHttpClient("QuizAppBlazor.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
@@ -21,7 +20,7 @@ namespace QuizAppBlazor.Client
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("QuizAppBlazor.ServerAPI"));
 
             builder.Services.AddApiAuthorization();
-            builder.Services.AddBlazoredLocalStorage();
+            //builder.Services.AddBlazoredLocalStorage();
             await builder.Build().RunAsync();
         }
     }
