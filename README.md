@@ -1,5 +1,10 @@
 # QuizApp Readme
 
+This app is currently hosted @ https://quiz.danilocv.se
+Feel free to register an account and test it out.
+
+WARNING: For security reasons, do NOT use your real email adress. Password may be very weak, max 6 chars, lower letters and at least one number. This only for personal testing.
+
 ## Overview
 
 Welcome to QuizApp, a versatile quiz application built on the ASP.NET Blazor WebAssembly framework, utilizing .NET 7. The application is "hosted" upon creation, which means it consists of three distinct projects within the same solution: the client (Blazor WebAssembly), the server (ASP.NET Core Web API), and a shared project, where files are shared between the client and server. This project was developed as a school assignment to meet specific requirements, outlined below:
